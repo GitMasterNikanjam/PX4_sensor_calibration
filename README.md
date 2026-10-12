@@ -53,7 +53,24 @@ target_link_libraries(my_app PRIVATE PX4::sensor_calibration)
 
 The main public headers are `Accelerometer.hpp`, `Barometer.hpp`,
 `Gyroscope.hpp`, `Magnetometer.hpp`, and `Utilities.hpp`. All classes and helper
-functions are in the `calibration` namespace.
+functions are in the `calibration` namespace. Headers and implementation files
+are stored under `src/`; CMake exports that directory as the public include
+path, so include statements do not need a `src/` prefix.
+
+## Example
+
+`examples/sensor_calibration_example.cpp` demonstrates all four sensor
+correction classes, an in-memory `CalibrationStore`, saving values through the
+utility functions, calibration slot selection, and restoring an accelerometer
+configuration. The example is excluded from the default build. Enable it with:
+
+```powershell
+cmake -S . -B build -DPX4_SENSOR_CALIBRATION_BUILD_EXAMPLES=ON
+cmake --build build --target sensor_calibration_example
+```
+
+The example uses identity rotation and an in-memory store for clarity. Replace
+those with the real mounting transform and persistent backend in an application.
 
 ## Complete guide
 
@@ -113,7 +130,8 @@ target_link_libraries(my_app PRIVATE PX4::sensor_calibration)
 already exist. If your matrix project exports a different target name, provide
 an alias or change the integration CMake accordingly.
 
-Include the API headers as needed:
+The public headers are stored in `src/` and exposed by the CMake target. Include
+them by name:
 
 ```cpp
 #include <Accelerometer.hpp>
